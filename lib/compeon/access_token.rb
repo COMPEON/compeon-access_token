@@ -38,7 +38,7 @@ module Compeon
 
         new(role: role, user_id: user_id, kind: kind, client_id: client_id, token: token)
       rescue JWT::DecodeError
-        throw ParseError
+        raise ParseError
       end
 
       def public_key
