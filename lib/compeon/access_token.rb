@@ -7,6 +7,8 @@ require 'open-uri'
 
 module Compeon
   class AccessToken
+    class ParseError < RuntimeError; end
+
     def initialize(role:, user_id:, kind:, client_id:, token:)
       @role = role
       @user_id = user_id
@@ -35,6 +37,8 @@ module Compeon
         client_id = data.fetch('cid')
 
         new(role: role, user_id: user_id, kind: kind, client_id: client_id, token: token)
+      rescue JWT::DecodeError
+        throw ParseError
       end
 
       def public_key
