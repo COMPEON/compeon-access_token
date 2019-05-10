@@ -21,7 +21,9 @@ module Compeon
       attr_writer :environment
 
       def environment
-        @environment || raise("#`#{self}.environment` must be set")
+        @environment ||
+          ENV['ENVIRONMENT'] ||
+          raise("`#{self}.environment` or `ENV['ENVIRONMENT']` must be set")
       end
 
       def parse(token)
