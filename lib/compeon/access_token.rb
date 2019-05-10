@@ -7,6 +7,8 @@ require 'open-uri'
 
 module Compeon
   class AccessToken
+    class ParseError < RuntimeError; end
+
     def initialize(role:, user_id:, kind:, client_id:, token:)
       @role = role
       @user_id = user_id
@@ -21,7 +23,9 @@ module Compeon
       attr_writer :environment
 
       def environment
-        @environment || raise("#`#{self}.environment` must be set")
+        @environment ||
+          ENV['ENVIRONMENT'] ||
+          raise("`#{self}.environment` or `ENV['ENVIRONMENT']` must be set")
       end
 
       def parse(token)
@@ -33,6 +37,8 @@ module Compeon
         client_id = data.fetch('cid')
 
         new(role: role, user_id: user_id, kind: kind, client_id: client_id, token: token)
+      rescue JWT::DecodeError
+        raise ParseError
       end
 
       def public_key
