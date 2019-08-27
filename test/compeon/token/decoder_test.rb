@@ -86,4 +86,101 @@ class Compeon::Token::DecoderTest < Minitest::Test
       ).decode
     end
   end
+
+  def test_with_a_valid_sub_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', sub: 'compeon' }, PRIVATE_KEY, 'RS256')
+
+    Compeon::Token::Decoder.new(
+      claim_verifications: { sub: 'compeon' },
+      encoded_token: encoded_token,
+      public_key: PRIVATE_KEY.public_key,
+      token_klass: TestToken
+    ).decode
+  end
+
+  def test_with_an_invalid_sub_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', sub: 'compeon' }, PRIVATE_KEY, 'RS256')
+
+    assert_raises do
+      Compeon::Token::Decoder.new(
+        claim_verifications: { sub: 'not compeon' },
+        encoded_token: encoded_token,
+        public_key: PRIVATE_KEY.public_key,
+        token_klass: TestToken
+      ).decode
+    end
+  end
+
+  def test_with_a_valid_iss_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iss: 'compeon' }, PRIVATE_KEY, 'RS256')
+
+    Compeon::Token::Decoder.new(
+      claim_verifications: { iss: 'compeon' },
+      encoded_token: encoded_token,
+      public_key: PRIVATE_KEY.public_key,
+      token_klass: TestToken
+    ).decode
+  end
+
+  def test_with_an_invalid_iss_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iss: 'compeon' }, PRIVATE_KEY, 'RS256')
+
+    assert_raises do
+      Compeon::Token::Decoder.new(
+        claim_verifications: { iss: 'not compeon' },
+        encoded_token: encoded_token,
+        public_key: PRIVATE_KEY.public_key,
+        token_klass: TestToken
+      ).decode
+    end
+  end
+
+  def test_with_a_valid_aud_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', aud: 'zuhörer' }, PRIVATE_KEY, 'RS256')
+
+    Compeon::Token::Decoder.new(
+      claim_verifications: { aud: 'zuhörer' },
+      encoded_token: encoded_token,
+      public_key: PRIVATE_KEY.public_key,
+      token_klass: TestToken
+    ).decode
+  end
+
+  def test_with_an_invalid_aud_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', aud: 'zuhörer' }, PRIVATE_KEY, 'RS256')
+
+    assert_raises do
+      Compeon::Token::Decoder.new(
+        claim_verifications: { aud: 'not zuhörer' },
+        encoded_token: encoded_token,
+        public_key: PRIVATE_KEY.public_key,
+        token_klass: TestToken
+      ).decode
+    end
+  end
+
+  def test_with_a_valid_iat_claim
+    current_time = Time.now.to_i
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iat: current_time }, PRIVATE_KEY, 'RS256')
+
+    Compeon::Token::Decoder.new(
+      claim_verifications: { iat: current_time },
+      encoded_token: encoded_token,
+      public_key: PRIVATE_KEY.public_key,
+      token_klass: TestToken
+    ).decode
+  end
+
+  def test_with_an_invalid_iat_claim
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iat: 'no time' }, PRIVATE_KEY, 'RS256')
+
+    assert_raises do
+      Compeon::Token::Decoder.new(
+        claim_verifications: { iat: true },
+        encoded_token: encoded_token,
+        public_key: PRIVATE_KEY.public_key,
+        token_klass: TestToken
+      ).decode
+    end
+  end
 end
