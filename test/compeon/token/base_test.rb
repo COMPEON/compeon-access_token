@@ -16,16 +16,18 @@ class Compeon::Token::BaseTest < Minitest::Test
 
     attr_accessor :attribute
 
-    def initialize(attribute:)
+    def initialize(attribute:, **claims)
+      super(**claims)
       @attribute = attribute
     end
   end
 
   def token
     @token ||= begin
-      token = TestToken.new(attribute: 'test attribute')
-      token.claims[:exp] = Time.now.to_i + 3600
-      token
+      TestToken.new(
+        attribute: 'test attribute',
+        exp: Time.now.to_i + 3600
+      )
     end
   end
 
@@ -34,13 +36,13 @@ class Compeon::Token::BaseTest < Minitest::Test
   end
 
   def test_with_a_missing_expiry_time
-    token.claims[:exp] = nil
+    token.exp = nil
 
     assert_equal(false, token.valid?)
   end
 
   def test_with_an_expiry_time_in_the_past
-    token.claims[:exp] = Time.now.to_i - 1
+    token.exp = Time.now.to_i - 1
 
     assert_equal(false, token.valid?)
   end

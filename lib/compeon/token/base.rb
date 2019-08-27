@@ -3,7 +3,7 @@
 module Compeon
   module Token
     class Base
-      attr_writer :claims
+      attr_accessor :aud, :exp, :iat, :iss, :sub
 
       class << self
         def attributes
@@ -24,8 +24,12 @@ module Compeon
         end
       end
 
-      def claims
-        @claims ||= {}
+      def initialize(**claims)
+        @aud = claims[:aud]
+        @exp = claims[:exp]
+        @iat = claims[:iat]
+        @iss = claims[:iss]
+        @sub = claims[:sub]
       end
 
       def encode(private_key:)
@@ -35,14 +39,22 @@ module Compeon
         ).encode
       end
 
+      def reserved_claims
+        {
+          aud: aud,
+          exp: exp,
+          iat: iat,
+          iss: iss,
+          sub: sub
+        }
+      end
+
       def valid?
         expires_at_valid? && attributes_valid?
       end
 
       def expires_at_valid?
-        expires_at = claims[:exp]
-
-        expires_at.is_a?(Numeric) && expires_at > Time.now.to_i
+        exp.is_a?(Numeric) && exp > Time.now.to_i
       end
 
       def attributes_valid?

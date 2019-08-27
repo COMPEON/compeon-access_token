@@ -18,7 +18,8 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
     attr_accessor :attribute
 
-    def initialize(attribute:)
+    def initialize(attribute:, **claims)
+      super(**claims)
       @attribute = attribute
     end
   end
@@ -37,12 +38,15 @@ class Compeon::Token::DecoderTest < Minitest::Test
   end
 
   def test_with_additional_claims
-    expires_at = Time.now.to_i + 3600
+    current_time = Time.now.to_i
+    expires_at = current_time + 3600
     encoded_token = JWT.encode(
       {
         attr: 'Ein Attribut',
         knd: 'test',
+        aud: 'audience',
         exp: expires_at,
+        iat: current_time,
         iss: 'compeon',
         sub: 'auth'
       },
@@ -58,9 +62,11 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
     assert_equal(TestToken, decoded_token.class)
     assert_equal('Ein Attribut', decoded_token.attribute)
-    assert_equal(expires_at, decoded_token.claims[:exp])
-    assert_equal('compeon', decoded_token.claims[:iss])
-    assert_equal('auth', decoded_token.claims[:sub])
+    assert_equal('audience', decoded_token.aud)
+    assert_equal(expires_at, decoded_token.exp)
+    assert_equal(current_time, decoded_token.iat)
+    assert_equal('compeon', decoded_token.iss)
+    assert_equal('auth', decoded_token.sub)
   end
 
   def test_with_a_token_of_wrong_kind

@@ -19,7 +19,8 @@ module Compeon
 
       attr_accessor :client_id, :role, :user_id
 
-      def initialize(client_id:, role:, user_id:)
+      def initialize(client_id:, role:, user_id:, **claims)
+        super(**claims)
         @client_id = client_id
         @role = role
         @user_id = user_id

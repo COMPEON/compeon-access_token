@@ -18,14 +18,15 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
     attr_accessor :attribute
 
-    def initialize(attribute:)
+    def initialize(attribute:, **claims)
+      super(**claims)
       @attribute = attribute
     end
   end
 
   def test_with_a_valid_token
     token = TestToken.new(attribute: '1 Attribut')
-    token.claims[:exp] = Time.now.to_i + 3600
+    token.exp = Time.now.to_i + 3600
 
     encoded_token = Compeon::Token::Encoder.new(
       private_key: PRIVATE_KEY,
@@ -47,10 +48,12 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
   def test_with_additional_claims
     expires_at = Time.now.to_i + 3600
-    token = TestToken.new(attribute: '1 Attribut')
-    token.claims[:exp] = expires_at
-    token.claims[:iss] = 'compeon'
-    token.claims[:sub] = 'auth'
+    token = TestToken.new(
+      attribute: '1 Attribut',
+      exp: expires_at,
+      iss: 'compeon',
+      sub: 'auth'
+    )
 
     encoded_token = Compeon::Token::Encoder.new(
       private_key: PRIVATE_KEY,
@@ -73,7 +76,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
   def test_with_an_expiry_time_in_the_past
     token = TestToken.new(attribute: '1 Attribut')
-    token.claims[:exp] = Time.now.to_i - 1
+    token.exp = Time.now.to_i - 1
 
     assert_raises do
       Compeon::Token::Encoder.new(
@@ -96,7 +99,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
   def test_with_a_missing_attribute
     token = TestToken.new(attribute: nil)
-    token.claims[:exp] = Time.now.to_i + 3600
+    token.exp = Time.now.to_i + 3600
 
     assert_raises do
       Compeon::Token::Encoder.new(
@@ -108,7 +111,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
   def test_with_a_missing_private_key
     token = TestToken.new(attribute: '1 Attribut')
-    token.claims[:exp] = Time.now.to_i + 3600
+    token.exp = Time.now.to_i + 3600
 
     assert_raises do
       Compeon::Token::Encoder.new(
