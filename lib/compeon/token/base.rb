@@ -13,10 +13,26 @@ module Compeon
         def token_attributes
           @token_attributes ||= attributes_mapping.values.freeze
         end
+
+        def decode(claim_verifications: {}, encoded_token:, public_key:)
+          Compeon::Token::Decoder.new(
+            claim_verifications: claim_verifications,
+            encoded_token: encoded_token,
+            public_key: public_key,
+            token_klass: self
+          ).decode
+        end
       end
 
       def claims
         @claims ||= {}
+      end
+
+      def encode(private_key:)
+        Compeon::Token::Encoder.new(
+          private_key: private_key,
+          token: self
+        ).encode
       end
 
       def valid?
