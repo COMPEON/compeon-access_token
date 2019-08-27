@@ -39,13 +39,8 @@ module Compeon
       def decoded_token_attributes
         decoded_token.to_h do |attribute, value|
           key = token_klass.attributes_mapping.key(attribute)
-
           [key || attribute, value]
         end
-      end
-
-      def claim_attributes
-        decoded_token.keys - token_klass.token_attributes - [:knd]
       end
 
       def compiled_claim_verifications
