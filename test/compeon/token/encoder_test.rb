@@ -29,7 +29,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
     token.exp = Time.now.to_i + 3600
 
     encoded_token = Compeon::Token::Encoder.new(
-      private_key: PRIVATE_KEY,
+      key: PRIVATE_KEY,
       token: token
     ).encode
 
@@ -59,7 +59,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
     )
 
     encoded_token = Compeon::Token::Encoder.new(
-      private_key: PRIVATE_KEY,
+      key: PRIVATE_KEY,
       token: token
     ).encode
 
@@ -85,7 +85,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
     assert_raises do
       Compeon::Token::Encoder.new(
-        private_key: PRIVATE_KEY,
+        key: PRIVATE_KEY,
         token: token
       ).encode
     end
@@ -96,7 +96,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
     assert_raises do
       Compeon::Token::Encoder.new(
-        private_key: PRIVATE_KEY,
+        key: PRIVATE_KEY,
         token: token
       ).encode
     end
@@ -108,19 +108,19 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
     assert_raises do
       Compeon::Token::Encoder.new(
-        private_key: PRIVATE_KEY,
+        key: PRIVATE_KEY,
         token: token
       ).encode
     end
   end
 
-  def test_with_a_missing_private_key
+  def test_with_a_missing_key
     token = TestToken.new(attribute: '1 Attribut')
     token.exp = Time.now.to_i + 3600
 
     assert_raises do
       Compeon::Token::Encoder.new(
-        private_key: nil,
+        key: nil,
         token: token
       ).encode
     end

@@ -35,7 +35,7 @@ token.exp = Time.now.to_i + 3600 # 1 Expiry time is required and must be in the 
 token.iss = 'issuer'
 token.sub = 'subject'
 
-token.encode(private_key: OpenSSL::PKey::RSA.new(private_key_string))
+token.encode(key: OpenSSL::PKey::RSA.new(private_key_string))
 # => eyJhbGciOiJIUzI1NiIsInR5cC...
 ```
 
@@ -44,7 +44,7 @@ Decode a token
 ```ruby
 token = Compeon::Token::Access.decode(
   encoded_token: 'eyJhbGciOiJIUzI1NiIsInR5cC...',
-  public_key: OpenSSL::PKey::RSA.new(private_key_string).public_key
+  key: OpenSSL::PKey::RSA.new(private_key_string).public_key
 )
 
 token.client_id # => 'compeon-auth'
@@ -63,7 +63,7 @@ token = Compeon::Token::Access.decode(
   # The `exp` claim is validated by default and is not needed here
   claim_verifications: { aud: 'audience', iat: true, iss: 'issuer', sub: 'subject' },
   encoded_token: 'eyJhbGciOiJIUzI1NiIsInR5cC...',
-  public_key: OpenSSL::PKey::RSA.new(private_key_string).public_key
+  key: OpenSSL::PKey::RSA.new(private_key_string).public_key
 )
 ```
 

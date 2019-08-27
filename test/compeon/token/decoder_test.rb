@@ -29,7 +29,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
     decoded_token = Compeon::Token::Decoder.new(
       encoded_token: encoded_token,
-      public_key: PRIVATE_KEY.public_key,
+      key: PRIVATE_KEY.public_key,
       token_klass: TestToken
     ).decode
 
@@ -56,7 +56,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
     decoded_token = Compeon::Token::Decoder.new(
       encoded_token: encoded_token,
-      public_key: PRIVATE_KEY.public_key,
+      key: PRIVATE_KEY.public_key,
       token_klass: TestToken
     ).decode
 
@@ -75,7 +75,18 @@ class Compeon::Token::DecoderTest < Minitest::Test
     assert_raises Compeon::Token::DecodeError do
       Compeon::Token::Decoder.new(
         encoded_token: encoded_token,
-        public_key: PRIVATE_KEY.public_key,
+        key: PRIVATE_KEY.public_key,
+        token_klass: TestToken
+      ).decode
+    end
+  end
+
+  def test_with_a_missing_key
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'not_test' }, PRIVATE_KEY, 'RS256')
+
+    assert_raises do
+      Compeon::Token::Decoder.new(
+        encoded_token: encoded_token,
         token_klass: TestToken
       ).decode
     end
@@ -87,7 +98,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     assert_raises Compeon::Token::DecodeError do
       Compeon::Token::Decoder.new(
         encoded_token: encoded_token,
-        public_key: PRIVATE_KEY.public_key,
+        key: PRIVATE_KEY.public_key,
         token_klass: TestToken
       ).decode
     end
@@ -99,7 +110,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     Compeon::Token::Decoder.new(
       claim_verifications: { sub: 'compeon' },
       encoded_token: encoded_token,
-      public_key: PRIVATE_KEY.public_key,
+      key: PRIVATE_KEY.public_key,
       token_klass: TestToken
     ).decode
   end
@@ -111,7 +122,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
       Compeon::Token::Decoder.new(
         claim_verifications: { sub: 'not compeon' },
         encoded_token: encoded_token,
-        public_key: PRIVATE_KEY.public_key,
+        key: PRIVATE_KEY.public_key,
         token_klass: TestToken
       ).decode
     end
@@ -123,7 +134,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     Compeon::Token::Decoder.new(
       claim_verifications: { iss: 'compeon' },
       encoded_token: encoded_token,
-      public_key: PRIVATE_KEY.public_key,
+      key: PRIVATE_KEY.public_key,
       token_klass: TestToken
     ).decode
   end
@@ -135,7 +146,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
       Compeon::Token::Decoder.new(
         claim_verifications: { iss: 'not compeon' },
         encoded_token: encoded_token,
-        public_key: PRIVATE_KEY.public_key,
+        key: PRIVATE_KEY.public_key,
         token_klass: TestToken
       ).decode
     end
@@ -147,7 +158,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     Compeon::Token::Decoder.new(
       claim_verifications: { aud: 'zuhörer' },
       encoded_token: encoded_token,
-      public_key: PRIVATE_KEY.public_key,
+      key: PRIVATE_KEY.public_key,
       token_klass: TestToken
     ).decode
   end
@@ -159,7 +170,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
       Compeon::Token::Decoder.new(
         claim_verifications: { aud: 'not zuhörer' },
         encoded_token: encoded_token,
-        public_key: PRIVATE_KEY.public_key,
+        key: PRIVATE_KEY.public_key,
         token_klass: TestToken
       ).decode
     end
@@ -172,7 +183,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     Compeon::Token::Decoder.new(
       claim_verifications: { iat: current_time },
       encoded_token: encoded_token,
-      public_key: PRIVATE_KEY.public_key,
+      key: PRIVATE_KEY.public_key,
       token_klass: TestToken
     ).decode
   end
@@ -184,7 +195,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
       Compeon::Token::Decoder.new(
         claim_verifications: { iat: true },
         encoded_token: encoded_token,
-        public_key: PRIVATE_KEY.public_key,
+        key: PRIVATE_KEY.public_key,
         token_klass: TestToken
       ).decode
     end

@@ -7,11 +7,11 @@ module Compeon
     class EncodeError < StandardError; end
 
     class Encoder
-      def initialize(private_key:, token:)
+      def initialize(key:, token:)
         @token = token
-        @private_key = private_key
+        @key = key
 
-        raise 'No private key given.' if @private_key.nil?
+        raise 'No key given.' if @key.nil?
         raise 'Token is invalid.' unless @token.valid?
       end
 
@@ -20,7 +20,7 @@ module Compeon
 
         JWT.encode(
           raw_token,
-          private_key,
+          key,
           Compeon::Token::JWT_ALGORITHM
         )
       rescue JWT::EncodeError
@@ -29,7 +29,7 @@ module Compeon
 
       private
 
-      attr_reader :token, :private_key
+      attr_reader :token, :key
 
       def build_raw_token
         {}.tap do |raw_token|

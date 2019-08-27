@@ -7,10 +7,10 @@ module Compeon
     class DecodeError < StandardError; end
 
     class Decoder
-      def initialize(claim_verifications: {}, encoded_token:, public_key:, token_klass:)
+      def initialize(claim_verifications: {}, encoded_token:, key:, token_klass:)
         @claim_verifications = claim_verifications
         @encoded_token = encoded_token
-        @public_key = public_key
+        @key = key
         @token_klass = token_klass
       end
 
@@ -22,12 +22,12 @@ module Compeon
 
       private
 
-      attr_reader :claim_verifications, :encoded_token, :public_key, :token_klass
+      attr_reader :claim_verifications, :encoded_token, :key, :token_klass
 
       def decoded_token
         @decoded_token ||= JWT.decode(
           encoded_token,
-          public_key,
+          key,
           true,
           algorithm: Compeon::Token::JWT_ALGORITHM,
           **compiled_claim_verifications

@@ -14,11 +14,11 @@ module Compeon
           @token_attributes ||= attributes_mapping.values.freeze
         end
 
-        def decode(claim_verifications: {}, encoded_token:, public_key:)
+        def decode(claim_verifications: {}, encoded_token:, key:)
           Compeon::Token::Decoder.new(
             claim_verifications: claim_verifications,
             encoded_token: encoded_token,
-            public_key: public_key,
+            key: key,
             token_klass: self
           ).decode
         end
@@ -32,9 +32,9 @@ module Compeon
         @sub = claims[:sub]
       end
 
-      def encode(private_key:)
+      def encode(key:)
         Compeon::Token::Encoder.new(
-          private_key: private_key,
+          key: key,
           token: self
         ).encode
       end

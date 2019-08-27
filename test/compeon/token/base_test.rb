@@ -83,10 +83,10 @@ class Compeon::Token::BaseTest < Minitest::Test
     mock = Minitest::Mock.new
     mock.expect(:decode, 'decoded token')
 
-    decoder = lambda { |claim_verifications:, encoded_token:, public_key:, token_klass:|
+    decoder = lambda { |claim_verifications:, encoded_token:, key:, token_klass:|
       assert_equal('claims', claim_verifications)
       assert_equal('encoded token', encoded_token)
-      assert_equal('public key', public_key)
+      assert_equal('public key', key)
       assert_equal(TestToken, token_klass)
       mock
     }
@@ -95,7 +95,7 @@ class Compeon::Token::BaseTest < Minitest::Test
       token = TestToken.decode(
         claim_verifications: 'claims',
         encoded_token: 'encoded token',
-        public_key: 'public key'
+        key: 'public key'
       )
 
       assert_equal('decoded token', token)
@@ -110,15 +110,15 @@ class Compeon::Token::BaseTest < Minitest::Test
     mock = Minitest::Mock.new
     mock.expect(:encode, 'encoded token')
 
-    encoder = lambda { |private_key:, token:|
-      assert_equal('private key', private_key)
+    encoder = lambda { |key:, token:|
+      assert_equal('private key', key)
       assert_equal(test_token, token)
       mock
     }
 
     Compeon::Token::Encoder.stub(:new, encoder) do
       encoded_token = test_token.encode(
-        private_key: 'private key'
+        key: 'private key'
       ).encode
 
       assert_equal('encoded token', encoded_token)
