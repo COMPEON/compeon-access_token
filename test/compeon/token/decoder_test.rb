@@ -6,9 +6,15 @@ class Compeon::Token::DecoderTest < Minitest::Test
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(512)
 
   class TestToken < Compeon::Token::Base
-    ATTRIBUTES_MAPPING = { attribute: :attr }.freeze
+    class << self
+      def attributes_mapping
+        { attribute: :attr }.freeze
+      end
 
-    KIND = 'test'
+      def kind
+        'test'
+      end
+    end
 
     attr_accessor :attribute
 

@@ -8,7 +8,7 @@ class Compeon::Token::AccessTest < Minitest::Test
   end
 
   def test_kind
-    assert_equal('access', Compeon::Token::Access::KIND)
+    assert_equal('access', Compeon::Token::Access.kind)
   end
 
   def test_attributes

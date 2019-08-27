@@ -14,7 +14,7 @@ module Compeon
       end
 
       def decode
-        raise DecodeError if decoded_token[:knd] != token_klass::KIND
+        raise DecodeError if decoded_token[:knd] != token_klass.kind
 
         token = token_klass.new(**decoded_token_attributes)
         token.claims = decoded_token_claims

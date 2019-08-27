@@ -14,10 +14,6 @@ module Compeon
           @token_attributes ||= attributes_mapping.values.freeze
         end
 
-        def attributes_mapping
-          self::ATTRIBUTES_MAPPING
-        end
-
         def token_attributes_mapping
           @token_attributes_mapping = {}.tap do |token_attrs_mapping|
             attributes_mapping.each { |key, value| token_attrs_mapping[value] = key }

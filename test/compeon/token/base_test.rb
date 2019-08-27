@@ -4,9 +4,15 @@ require 'test_helper'
 
 class Compeon::Token::BaseTest < Minitest::Test
   class TestToken < Compeon::Token::Base
-    ATTRIBUTES_MAPPING = { attribute: :attr }.freeze
+    class << self
+      def attributes_mapping
+        { attribute: :attr }.freeze
+      end
 
-    KIND = 'test'
+      def kind
+        'test'
+      end
+    end
 
     attr_accessor :attribute
 

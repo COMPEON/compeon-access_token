@@ -36,7 +36,7 @@ module Compeon
           token.class.attributes_mapping.each do |attribute, token_attribute|
             raw_token[token_attribute] = token.public_send(attribute)
           end
-        end.merge(token.claims, knd: token.class::KIND)
+        end.merge(token.claims, knd: token.class.kind)
       end
     end
   end
