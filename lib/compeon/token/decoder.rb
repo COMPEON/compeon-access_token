@@ -17,7 +17,7 @@ module Compeon
         raise DecodeError if decoded_token[:knd] != token_klass.kind
 
         token = token_klass.new(**decoded_token_attributes)
-        token.claims = decoded_token_claims
+        token.claims = decoded_token.slice(*claim_attributes)
         token
       end
 
@@ -40,14 +40,6 @@ module Compeon
         decoded_token.slice(*token_klass.token_attributes).to_h do |attribute, value|
           key = token_klass.attributes_mapping.key(attribute)
           [key, value]
-        end
-      end
-
-      def decoded_token_claims
-        {}.tap do |claims|
-          decoded_token.slice(*claim_attributes).each do |claim, value|
-            claims[claim] = value
-          end
         end
       end
 
