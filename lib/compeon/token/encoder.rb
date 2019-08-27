@@ -21,7 +21,7 @@ module Compeon
         JWT.encode(
           raw_token,
           key,
-          Compeon::Token::JWT_ALGORITHM
+          token.class::JWT_ALGORITHM
         )
       rescue JWT::EncodeError
         raise EncodeError

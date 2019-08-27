@@ -3,6 +3,8 @@
 module Compeon
   module Token
     class Access < Base
+      JWT_ALGORITHM = 'RS256'
+
       class << self
         def attributes_mapping
           {

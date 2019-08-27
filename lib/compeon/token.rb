@@ -7,6 +7,5 @@ require 'compeon/token/encoder'
 
 module Compeon
   module Token
-    JWT_ALGORITHM = 'RS256'
   end
 end

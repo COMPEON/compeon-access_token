@@ -4,6 +4,8 @@ require 'test_helper'
 
 class Compeon::Token::BaseTest < Minitest::Test
   class TestToken < Compeon::Token::Base
+    JWT_ALGORITHM = 'RS256'
+
     class << self
       def attributes_mapping
         { attribute: :attr }.freeze

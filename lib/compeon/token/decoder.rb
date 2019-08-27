@@ -29,7 +29,7 @@ module Compeon
           encoded_token,
           key,
           true,
-          algorithm: Compeon::Token::JWT_ALGORITHM,
+          algorithm: token_klass::JWT_ALGORITHM,
           **compiled_claim_verifications
         )[0].transform_keys(&:to_sym)
       rescue JWT::DecodeError
