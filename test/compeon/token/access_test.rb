@@ -30,17 +30,6 @@ class Compeon::Token::AccessTest < Minitest::Test
     )
   end
 
-  def test_token_attributes_mapping
-    assert_equal(
-      {
-        cid: :client_id,
-        role: :role,
-        uid: :user_id
-      },
-      Compeon::Token::Access.token_attributes_mapping
-    )
-  end
-
   def test_constructor
     Compeon::Token::Access.new(
       client_id: 'client id',

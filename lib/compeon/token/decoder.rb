@@ -37,10 +37,9 @@ module Compeon
       end
 
       def decoded_token_attributes
-        {}.tap do |attributes|
-          decoded_token.slice(*token_klass.token_attributes).each do |attribute, value|
-            attributes[token_klass.token_attributes_mapping[attribute]] = value
-          end
+        decoded_token.slice(*token_klass.token_attributes).to_h do |attribute, value|
+          key = token_klass.attributes_mapping.key(attribute)
+          [key, value]
         end
       end
 
