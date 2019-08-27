@@ -53,6 +53,32 @@ class Compeon::Token::BaseTest < Minitest::Test
     assert_equal(false, token.valid?)
   end
 
+  def test_attr_accessors
+    current_time = Time.now.to_i
+    expires_at = current_time + 3600
+
+    token = TestToken.new(
+      attribute: '1 attribut',
+      aud: 'audience',
+      exp: expires_at,
+      iat: current_time,
+      iss: 'compeon',
+      sub: 'auth'
+    )
+
+    assert_equal('audience', token.aud)
+    assert_equal(expires_at, token.exp)
+    assert_equal(current_time, token.iat)
+    assert_equal('compeon', token.iss)
+    assert_equal('auth', token.sub)
+
+    assert(true, token.respond_to?(:aud=))
+    assert(true, token.respond_to?(:exp=))
+    assert(true, token.respond_to?(:iat=))
+    assert(true, token.respond_to?(:iss=))
+    assert(true, token.respond_to?(:sub=))
+  end
+
   def test_decode
     mock = Minitest::Mock.new
     mock.expect(:decode, 'decoded token')

@@ -47,10 +47,13 @@ class Compeon::Token::EncoderTest < Minitest::Test
   end
 
   def test_with_additional_claims
-    expires_at = Time.now.to_i + 3600
+    current_time = Time.now.to_i
+    expires_at = current_time + 3600
     token = TestToken.new(
       attribute: '1 Attribut',
+      aud: 'audience',
       exp: expires_at,
+      iat: current_time,
       iss: 'compeon',
       sub: 'auth'
     )
@@ -69,7 +72,9 @@ class Compeon::Token::EncoderTest < Minitest::Test
       algorithm: 'RS256'
     )[0]
 
+    assert_equal('audience', decoded_token['aud'])
     assert_equal(expires_at, decoded_token['exp'])
+    assert_equal(current_time, decoded_token['iat'])
     assert_equal('compeon', decoded_token['iss'])
     assert_equal('auth', decoded_token['sub'])
   end
