@@ -5,10 +5,16 @@ require 'test_helper'
 class Compeon::Token::DecoderTest < Minitest::Test
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(512)
 
-  class TestToken
-    include Compeon::Token::Base.attributes(attribute: :attr)
+  class TestToken < Compeon::Token::Base
+    ATTRIBUTES_MAPPING = { attribute: :attr }.freeze
 
     KIND = 'test'
+
+    attr_accessor :attribute
+
+    def initialize(attribute:)
+      @attribute = attribute
+    end
   end
 
   def test_with_a_valid_token

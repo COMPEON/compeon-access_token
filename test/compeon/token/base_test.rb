@@ -3,8 +3,16 @@
 require 'test_helper'
 
 class Compeon::Token::BaseTest < Minitest::Test
-  class TestToken
-    include Compeon::Token::Base.attributes(attribute: :attr)
+  class TestToken < Compeon::Token::Base
+    ATTRIBUTES_MAPPING = { attribute: :attr }.freeze
+
+    KIND = 'test'
+
+    attr_accessor :attribute
+
+    def initialize(attribute:)
+      @attribute = attribute
+    end
   end
 
   def token
