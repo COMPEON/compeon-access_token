@@ -21,7 +21,7 @@ class Compeon::Token::BaseTest < Minitest::Test
     attr_accessor :attribute
 
     def initialize(attribute:, **claims)
-      super(**claims)
+      super(claims)
       @attribute = attribute
     end
   end
