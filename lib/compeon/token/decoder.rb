@@ -37,9 +37,8 @@ module Compeon
       end
 
       def decoded_token_attributes
-        decoded_token.to_h do |attribute, value|
-          key = token_klass.attributes_mapping.key(attribute)
-          [key || attribute, value]
+        decoded_token.transform_keys do |attribute|
+          token_klass.attributes_mapping.key(attribute) || attribute
         end
       end
 
@@ -49,7 +48,7 @@ module Compeon
             next unless claim_verifications[claim]
 
             verifications[claim] = claim_verifications[claim]
-            verifications["verify_#{claim}".to_sym] = true
+            verifications[:"verify_#{claim}"] = true
           end
 
           verifications[:verify_iat] = true if claim_verifications[:iat]

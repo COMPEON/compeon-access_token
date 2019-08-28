@@ -16,10 +16,12 @@ module Compeon
       end
 
       def encode
-        raw_token = build_raw_token
-
         JWT.encode(
-          raw_token,
+          {
+            **attributes,
+            **token.reserved_claims,
+            knd: token.class.kind
+          },
           key,
           token.class.jwt_algorithm
         )
@@ -31,12 +33,10 @@ module Compeon
 
       attr_reader :token, :key
 
-      def build_raw_token
-        {}.tap do |raw_token|
-          token.class.attributes_mapping.each do |attribute, token_attribute|
-            raw_token[token_attribute] = token.public_send(attribute)
-          end
-        end.merge(token.reserved_claims, knd: token.class.kind)
+      def attributes
+        token.class.attributes_mapping.invert.transform_values do |attribute|
+          token.public_send(attribute)
+        end
       end
     end
   end
