@@ -10,10 +10,6 @@ module Compeon
           @attributes ||= attributes_mapping.keys.freeze
         end
 
-        def token_attributes
-          @token_attributes ||= attributes_mapping.values.freeze
-        end
-
         def decode(claim_verifications: {}, encoded_token:, key:)
           Compeon::Token::Decoder.new(
             claim_verifications: claim_verifications,

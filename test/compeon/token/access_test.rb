@@ -15,10 +15,6 @@ class Compeon::Token::AccessTest < Minitest::Test
     assert_equal(%i[client_id role user_id], Compeon::Token::Access.attributes)
   end
 
-  def test_token_attributes
-    assert_equal(%i[cid role uid], Compeon::Token::Access.token_attributes)
-  end
-
   def test_attributes_mapping
     assert_equal(
       {
