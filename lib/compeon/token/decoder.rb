@@ -20,7 +20,7 @@ module Compeon
         attributes = decoded_token_attributes
         attributes.delete(:knd)
 
-        token_klass.new(**attributes)
+        token_klass.new(attributes)
       end
 
       private

@@ -50,14 +50,12 @@ module Compeon
       end
 
       def registered_claims
-        {
-          aud: audience,
-          exp: expires_at,
-          iat: issued_at,
-          iss: issuer,
-          nbf: not_before,
-          sub: subject
-        }.compact
+        self
+          .class
+          .registered_claims_mapping
+          .invert
+          .transform_values { |claim| public_send(claim) }
+          .compact
       end
 
       def valid?
