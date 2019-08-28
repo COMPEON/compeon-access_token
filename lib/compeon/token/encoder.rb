@@ -34,9 +34,11 @@ module Compeon
       attr_reader :token, :key
 
       def attributes
-        token.class.attributes_mapping.invert.transform_values do |attribute|
-          token.public_send(attribute)
-        end
+        token
+          .class
+          .attributes_mapping
+          .invert
+          .transform_values { |attribute| token.public_send(attribute) }
       end
     end
   end
