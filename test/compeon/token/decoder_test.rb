@@ -6,11 +6,13 @@ class Compeon::Token::DecoderTest < Minitest::Test
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(512)
 
   class TestToken < Compeon::Token::Base
-    JWT_ALGORITHM = 'RS256'
-
     class << self
       def attributes_mapping
         { attribute: :attr }.freeze
+      end
+
+      def jwt_algorithm
+        'RS256'
       end
 
       def kind
