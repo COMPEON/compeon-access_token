@@ -44,6 +44,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
   def test_with_additional_claims
     current_time = Time.now.to_i
     expires_at = current_time + 3600
+    not_before = current_time - 1200
     encoded_token = JWT.encode(
       {
         attr: 'Ein Attribut',
@@ -52,6 +53,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
         exp: expires_at,
         iat: current_time,
         iss: 'compeon',
+        nbf: not_before,
         sub: 'auth'
       },
       PRIVATE_KEY,
@@ -70,6 +72,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     assert_equal(expires_at, decoded_token.expires_at)
     assert_equal(current_time, decoded_token.issued_at)
     assert_equal('compeon', decoded_token.issuer)
+    assert_equal(not_before, decoded_token.not_before)
     assert_equal('auth', decoded_token.subject)
   end
 
@@ -91,6 +94,18 @@ class Compeon::Token::DecoderTest < Minitest::Test
     assert_raises do
       Compeon::Token::Decoder.new(
         encoded_token: encoded_token,
+        token_klass: TestToken
+      ).decode
+    end
+  end
+
+  def test_with_a_not_yet_valid_token
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', nbf: Time.now.to_i + 3600, knd: 'test' }, PRIVATE_KEY, 'RS256')
+
+    assert_raises Compeon::Token::DecodeError do
+      Compeon::Token::Decoder.new(
+        encoded_token: encoded_token,
+        key: PRIVATE_KEY.public_key,
         token_klass: TestToken
       ).decode
     end
@@ -185,7 +200,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
     encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iat: current_time }, PRIVATE_KEY, 'RS256')
 
     Compeon::Token::Decoder.new(
-      claim_verifications: { iat: current_time },
+      claim_verifications: { iaxt: current_time },
       encoded_token: encoded_token,
       key: PRIVATE_KEY.public_key,
       token_klass: TestToken

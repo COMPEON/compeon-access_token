@@ -53,12 +53,15 @@ class Compeon::Token::EncoderTest < Minitest::Test
   def test_with_additional_claims
     current_time = Time.now.to_i
     expires_at = current_time + 3600
+    not_before = current_time - 1200
+
     token = TestToken.new(
       attribute: '1 Attribut',
       audience: 'audience',
       expires_at: expires_at,
       issued_at: current_time,
       issuer: 'compeon',
+      not_before: not_before,
       subject: 'auth'
     )
 
@@ -80,6 +83,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
     assert_equal(expires_at, decoded_token['exp'])
     assert_equal(current_time, decoded_token['iat'])
     assert_equal('compeon', decoded_token['iss'])
+    assert_equal(not_before, decoded_token['nbf'])
     assert_equal('auth', decoded_token['sub'])
   end
 

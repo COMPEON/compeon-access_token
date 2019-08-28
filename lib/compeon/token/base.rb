@@ -3,7 +3,7 @@
 module Compeon
   module Token
     class Base
-      attr_accessor :audience, :expires_at, :issued_at, :issuer, :subject
+      attr_accessor :audience, :expires_at, :issued_at, :issuer, :not_before, :subject
 
       class << self
         def attributes
@@ -16,6 +16,7 @@ module Compeon
             expires_at: :exp,
             issued_at: :iat,
             issuer: :iss,
+            not_before: :nbf,
             subject: :sub
           }.freeze
         end
@@ -30,11 +31,12 @@ module Compeon
         end
       end
 
-      def initialize(audience: nil, expires_at: nil, issued_at: nil, issuer: nil, subject: nil)
+      def initialize(audience: nil, expires_at: nil, issued_at: nil, issuer: nil, not_before: nil, subject: nil)
         @audience = audience
         @expires_at = expires_at
         @issued_at = issued_at
         @issuer = issuer
+        @not_before = not_before
         @subject = subject
       end
 
@@ -51,6 +53,7 @@ module Compeon
           exp: expires_at,
           iat: issued_at,
           iss: issuer,
+          nbf: not_before,
           sub: subject
         }
       end

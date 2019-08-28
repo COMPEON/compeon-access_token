@@ -60,6 +60,7 @@ class Compeon::Token::BaseTest < Minitest::Test
   def test_attr_accessors
     current_time = Time.now.to_i
     expires_at = current_time + 3600
+    not_before = current_time + 120
 
     token = TestToken.new(
       attribute: '1 attribut',
@@ -67,6 +68,7 @@ class Compeon::Token::BaseTest < Minitest::Test
       expires_at: expires_at,
       issued_at: current_time,
       issuer: 'compeon',
+      not_before: not_before,
       subject: 'auth'
     )
 
@@ -74,12 +76,14 @@ class Compeon::Token::BaseTest < Minitest::Test
     assert_equal(expires_at, token.expires_at)
     assert_equal(current_time, token.issued_at)
     assert_equal('compeon', token.issuer)
+    assert_equal(not_before, token.not_before)
     assert_equal('auth', token.subject)
 
     assert(true, token.respond_to?(:audience=))
     assert(true, token.respond_to?(:expires_at=))
     assert(true, token.respond_to?(:issued_at=))
     assert(true, token.respond_to?(:issuer=))
+    assert(true, token.respond_to?(:not_before=))
     assert(true, token.respond_to?(:subject=))
   end
 
