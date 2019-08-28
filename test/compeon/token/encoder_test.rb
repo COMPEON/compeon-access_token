@@ -30,11 +30,11 @@ class Compeon::Token::EncoderTest < Minitest::Test
     expires_at = Time.now.to_i + 3600
     token = TestToken.new(attribute: '1 Attribut', expires_at: expires_at)
 
-    jwt_encoder = lambda { |payload, key, algorithm|
+    jwt_encoder = lambda do |payload, key, algorithm|
       assert_equal({ attr: '1 Attribut', exp: expires_at, knd: 'test' }, payload)
       assert_equal(PRIVATE_KEY, key)
       assert_equal('SELECTED ALGORITHM', algorithm)
-    }
+    end
 
     TestToken.stub(:jwt_algorithm, 'SELECTED ALGORITHM') do
       JWT.stub(:encode, jwt_encoder) do
