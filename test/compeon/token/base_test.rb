@@ -4,11 +4,13 @@ require 'test_helper'
 
 class Compeon::Token::BaseTest < Minitest::Test
   class TestToken < Compeon::Token::Base
-    self.jwt_algorithm = 'RS256'
-
     class << self
       def attributes_mapping
         { attribute: :attr }.freeze
+      end
+
+      def jwt_algorithm
+        'RS256'
       end
 
       def kind

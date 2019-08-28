@@ -3,8 +3,6 @@
 module Compeon
   module Token
     class Access < Base
-      self.jwt_algorithm = 'RS256'
-
       class << self
         def attributes_mapping
           {
@@ -12,6 +10,10 @@ module Compeon
             role: :role,
             user_id: :uid
           }.freeze
+        end
+
+        def jwt_algorithm
+          'RS256'
         end
 
         def kind

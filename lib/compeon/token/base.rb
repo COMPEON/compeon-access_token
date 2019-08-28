@@ -6,8 +6,6 @@ module Compeon
       attr_accessor :audience, :expires_at, :issued_at, :issuer, :not_before, :subject
 
       class << self
-        attr_accessor :jwt_algorithm
-
         def attributes
           @attributes ||= attributes_mapping.keys.freeze
         end
