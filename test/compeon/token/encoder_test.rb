@@ -6,13 +6,11 @@ class Compeon::Token::EncoderTest < Minitest::Test
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(512)
 
   class TestToken < Compeon::Token::Base
+    self.jwt_algorithm = 'RS256'
+
     class << self
       def attributes_mapping
         { attribute: :attr }.freeze
-      end
-
-      def jwt_algorithm
-        'RS256'
       end
 
       def kind
@@ -25,6 +23,26 @@ class Compeon::Token::EncoderTest < Minitest::Test
     def initialize(attribute:, **claims)
       super(claims)
       @attribute = attribute
+    end
+  end
+
+  def test_it_takes_the_algorithm_from_the_token_class
+    expires_at = Time.now.to_i + 3600
+    token = TestToken.new(attribute: '1 Attribut', expires_at: expires_at)
+
+    jwt_encoder = lambda { |payload, key, algorithm|
+      assert_equal({ attr: '1 Attribut', exp: expires_at, knd: 'test' }, payload)
+      assert_equal(PRIVATE_KEY, key)
+      assert_equal('SELECTED ALGORITHM', algorithm)
+    }
+
+    TestToken.stub(:jwt_algorithm, 'SELECTED ALGORITHM') do
+      JWT.stub(:encode, jwt_encoder) do
+        Compeon::Token::Encoder.new(
+          key: PRIVATE_KEY,
+          token: token
+        ).encode
+      end
     end
   end
 
