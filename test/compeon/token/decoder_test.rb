@@ -66,11 +66,11 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
     assert_equal(TestToken, decoded_token.class)
     assert_equal('Ein Attribut', decoded_token.attribute)
-    assert_equal('audience', decoded_token.aud)
-    assert_equal(expires_at, decoded_token.exp)
-    assert_equal(current_time, decoded_token.iat)
-    assert_equal('compeon', decoded_token.iss)
-    assert_equal('auth', decoded_token.sub)
+    assert_equal('audience', decoded_token.audience)
+    assert_equal(expires_at, decoded_token.expires_at)
+    assert_equal(current_time, decoded_token.issued_at)
+    assert_equal('compeon', decoded_token.issuer)
+    assert_equal('auth', decoded_token.subject)
   end
 
   def test_with_a_token_of_wrong_kind

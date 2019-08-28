@@ -3,11 +3,21 @@
 module Compeon
   module Token
     class Base
-      attr_accessor :aud, :exp, :iat, :iss, :sub
+      attr_accessor :audience, :expires_at, :issued_at, :issuer, :subject
 
       class << self
         def attributes
           @attributes ||= attributes_mapping.keys.freeze
+        end
+
+        def registered_claims_mapping
+          {
+            audience: :aud,
+            expires_at: :exp,
+            issued_at: :iat,
+            issuer: :iss,
+            subject: :sub
+          }.freeze
         end
 
         def decode(claim_verifications: {}, encoded_token:, key:)
@@ -20,12 +30,12 @@ module Compeon
         end
       end
 
-      def initialize(**claims)
-        @aud = claims[:aud]
-        @exp = claims[:exp]
-        @iat = claims[:iat]
-        @iss = claims[:iss]
-        @sub = claims[:sub]
+      def initialize(audience: nil, expires_at: nil, issued_at: nil, issuer: nil, subject: nil)
+        @audience = audience
+        @expires_at = expires_at
+        @issued_at = issued_at
+        @issuer = issuer
+        @subject = subject
       end
 
       def encode(key:)
@@ -35,13 +45,13 @@ module Compeon
         ).encode
       end
 
-      def reserved_claims
+      def registered_claims
         {
-          aud: aud,
-          exp: exp,
-          iat: iat,
-          iss: iss,
-          sub: sub
+          aud: audience,
+          exp: expires_at,
+          iat: issued_at,
+          iss: issuer,
+          sub: subject
         }
       end
 
@@ -50,7 +60,7 @@ module Compeon
       end
 
       def expires_at_valid?
-        exp.is_a?(Numeric) && exp > Time.now.to_i
+        !expires_at.nil? && expires_at > Time.now.to_i
       end
 
       def attributes_valid?

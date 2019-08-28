@@ -30,7 +30,7 @@ class Compeon::Token::BaseTest < Minitest::Test
     @token ||= begin
       TestToken.new(
         attribute: 'test attribute',
-        exp: Time.now.to_i + 3600
+        expires_at: Time.now.to_i + 3600
       )
     end
   end
@@ -40,13 +40,13 @@ class Compeon::Token::BaseTest < Minitest::Test
   end
 
   def test_with_a_missing_expiry_time
-    token.exp = nil
+    token.expires_at = nil
 
     assert_equal(false, token.valid?)
   end
 
   def test_with_an_expiry_time_in_the_past
-    token.exp = Time.now.to_i - 1
+    token.expires_at = Time.now.to_i - 1
 
     assert_equal(false, token.valid?)
   end
@@ -63,24 +63,24 @@ class Compeon::Token::BaseTest < Minitest::Test
 
     token = TestToken.new(
       attribute: '1 attribut',
-      aud: 'audience',
-      exp: expires_at,
-      iat: current_time,
-      iss: 'compeon',
-      sub: 'auth'
+      audience: 'audience',
+      expires_at: expires_at,
+      issued_at: current_time,
+      issuer: 'compeon',
+      subject: 'auth'
     )
 
-    assert_equal('audience', token.aud)
-    assert_equal(expires_at, token.exp)
-    assert_equal(current_time, token.iat)
-    assert_equal('compeon', token.iss)
-    assert_equal('auth', token.sub)
+    assert_equal('audience', token.audience)
+    assert_equal(expires_at, token.expires_at)
+    assert_equal(current_time, token.issued_at)
+    assert_equal('compeon', token.issuer)
+    assert_equal('auth', token.subject)
 
-    assert(true, token.respond_to?(:aud=))
-    assert(true, token.respond_to?(:exp=))
-    assert(true, token.respond_to?(:iat=))
-    assert(true, token.respond_to?(:iss=))
-    assert(true, token.respond_to?(:sub=))
+    assert(true, token.respond_to?(:audience=))
+    assert(true, token.respond_to?(:expires_at=))
+    assert(true, token.respond_to?(:issued_at=))
+    assert(true, token.respond_to?(:issuer=))
+    assert(true, token.respond_to?(:subject=))
   end
 
   def test_decode

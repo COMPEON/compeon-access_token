@@ -19,7 +19,7 @@ module Compeon
         JWT.encode(
           {
             **attributes,
-            **token.reserved_claims,
+            **token.registered_claims,
             knd: token.class.kind
           },
           key,

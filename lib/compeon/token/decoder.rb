@@ -17,7 +17,10 @@ module Compeon
       def decode
         raise DecodeError if decoded_token[:knd] != token_klass.kind
 
-        token_klass.new(**decoded_token_attributes)
+        attributes = decoded_token_attributes
+        attributes.delete(:knd)
+
+        token_klass.new(**attributes)
       end
 
       private
@@ -37,8 +40,13 @@ module Compeon
       end
 
       def decoded_token_attributes
+        attributes_mapping = token_klass.attributes_mapping
+        registered_claims_mapping = token_klass.registered_claims_mapping
+
         decoded_token.transform_keys do |attribute|
-          token_klass.attributes_mapping.key(attribute) || attribute
+          attributes_mapping.key(attribute) ||
+            registered_claims_mapping.key(attribute) ||
+            attribute
         end
       end
 
