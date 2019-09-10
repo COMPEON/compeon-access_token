@@ -2,6 +2,7 @@
 
 require 'compeon/token/base'
 require 'compeon/token/access'
+require 'compeon/token/authorization'
 require 'compeon/token/decoder'
 require 'compeon/token/encoder'
 
