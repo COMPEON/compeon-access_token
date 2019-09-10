@@ -208,7 +208,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
   end
 
   def test_with_an_invalid_iat_claim
-    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iat: 'no time' }, PRIVATE_KEY, 'RS256')
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test', iat: Time.now.to_i + 3600 }, PRIVATE_KEY, 'RS256')
 
     assert_raises do
       Compeon::Token::Decoder.new(
