@@ -5,8 +5,12 @@ require 'test_helper'
 class Compeon::Token::BaseTest < Minitest::Test
   class TestToken < Compeon::Token::Base
     class << self
-      def attributes_mapping
+      def required_attributes_mapping
         { attribute: :attr }.freeze
+      end
+
+      def optional_attributes_mapping
+        { optional_attr: :oattr }.freeze
       end
 
       def jwt_algorithm
@@ -18,11 +22,12 @@ class Compeon::Token::BaseTest < Minitest::Test
       end
     end
 
-    attr_accessor :attribute
+    attr_accessor :attribute, :optional_attr
 
-    def initialize(attribute:, **claims)
+    def initialize(attribute:, optional_attr: nil, **claims)
       super(claims)
       @attribute = attribute
+      @optional_attr = optional_attr
     end
   end
 

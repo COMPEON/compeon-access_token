@@ -39,6 +39,7 @@ module Compeon
           .attributes_mapping
           .invert
           .transform_values { |attribute| token.public_send(attribute) }
+          .reject { |attribute, value| token.class.optional_attributes.include?(attribute) && value.nil? }
       end
     end
   end

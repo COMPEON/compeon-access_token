@@ -10,6 +10,18 @@ module Compeon
           @attributes ||= attributes_mapping.keys.freeze
         end
 
+        def attributes_mapping
+          required_attributes_mapping.merge(optional_attributes_mapping).freeze
+        end
+
+        def required_attributes
+          @required_attributes ||= required_attributes_mapping.keys.freeze
+        end
+
+        def optional_attributes
+          @optional_attributes ||= optional_attributes_mapping.keys.freeze
+        end
+
         def registered_claims_mapping
           {
             audience: :aud,
@@ -65,7 +77,7 @@ module Compeon
       end
 
       def attributes_valid?
-        self.class.attributes.none? { |accessor| public_send(accessor).nil? }
+        self.class.required_attributes.none? { |accessor| public_send(accessor).nil? }
       end
     end
   end

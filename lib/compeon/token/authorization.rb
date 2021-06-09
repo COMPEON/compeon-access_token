@@ -4,12 +4,16 @@ module Compeon
   module Token
     class Authorization < Base
       class << self
-        def attributes_mapping
+        def required_attributes_mapping
           {
             client_id: :cid,
             redirect_uri: :uri,
             user_id: :uid
           }.freeze
+        end
+
+        def optional_attributes_mapping
+          {}.freeze
         end
 
         def jwt_algorithm

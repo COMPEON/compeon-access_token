@@ -7,8 +7,12 @@ class Compeon::Token::EncoderTest < Minitest::Test
 
   class TestToken < Compeon::Token::Base
     class << self
-      def attributes_mapping
+      def required_attributes_mapping
         { attribute: :attr }.freeze
+      end
+
+      def optional_attributes_mapping
+        { optional_attr: :oattr }.freeze
       end
 
       def jwt_algorithm
@@ -20,15 +24,39 @@ class Compeon::Token::EncoderTest < Minitest::Test
       end
     end
 
-    attr_accessor :attribute
+    attr_accessor :attribute, :optional_attr
 
-    def initialize(attribute:, **claims)
+    def initialize(attribute:, optional_attr: nil, **claims)
       super(claims)
       @attribute = attribute
+      @optional_attr = optional_attr
     end
   end
 
   def test_with_a_valid_token
+    token = TestToken.new(attribute: '1 Attribut', optional_attr: 'optional attribute')
+    token.expires_at = Time.now.to_i + 3600
+
+    encoded_token = Compeon::Token::Encoder.new(
+      key: PRIVATE_KEY,
+      token: token
+    ).encode
+
+    assert_equal(String, encoded_token.class)
+
+    decoded_token = JWT.decode(
+      encoded_token,
+      PRIVATE_KEY.public_key,
+      true,
+      algorithm: 'RS256'
+    )[0]
+
+    assert_equal('1 Attribut', decoded_token['attr'])
+    assert_equal('optional attribute', decoded_token['oattr'])
+    assert_equal('test', decoded_token['knd'])
+  end
+
+  def test_with_a_valid_token_with_optional_attributes_omitted
     token = TestToken.new(attribute: '1 Attribut')
     token.expires_at = Time.now.to_i + 3600
 
@@ -47,6 +75,7 @@ class Compeon::Token::EncoderTest < Minitest::Test
     )[0]
 
     assert_equal('1 Attribut', decoded_token['attr'])
+    assert_equal(nil, decoded_token['oattr'])
     assert_equal('test', decoded_token['knd'])
   end
 
