@@ -12,7 +12,7 @@ class Compeon::Token::AccessTest < Minitest::Test
   end
 
   def test_attributes
-    assert_equal(%i[client_id role user_id], Compeon::Token::Access.attributes)
+    assert_equal(%i[client_id role user_id session_id], Compeon::Token::Access.attributes)
   end
 
   def test_attributes_mapping
@@ -20,7 +20,8 @@ class Compeon::Token::AccessTest < Minitest::Test
       {
         client_id: :cid,
         role: :role,
-        user_id: :uid
+        user_id: :uid,
+        session_id: :sid
       },
       Compeon::Token::Access.attributes_mapping
     )
@@ -30,8 +31,20 @@ class Compeon::Token::AccessTest < Minitest::Test
     Compeon::Token::Access.new(
       client_id: 'client id',
       role: 'role',
+      user_id: 'user id',
+      session_id: 'session id'
+    )
+  end
+
+
+  def test_session_id_is_optional
+    token = Compeon::Token::Access.new(
+      client_id: 'client id',
+      role: 'role',
       user_id: 'user id'
     )
+
+    assert_equal(nil, token.session_id)
   end
 
   def test_attr_accessors
@@ -47,5 +60,6 @@ class Compeon::Token::AccessTest < Minitest::Test
     assert(true, token.respond_to?(:client_id=))
     assert(true, token.respond_to?(:role=))
     assert(true, token.respond_to?(:user_id=))
+    assert(true, token.respond_to?(:session_id=))
   end
 end
