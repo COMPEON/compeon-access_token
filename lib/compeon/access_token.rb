@@ -9,15 +9,16 @@ module Compeon
   class AccessToken
     class ParseError < RuntimeError; end
 
-    def initialize(role:, user_id:, kind:, client_id:, token:)
+    def initialize(role:, user_id:, kind:, client_id:, session_id: nil, token:)
       @role = role
       @user_id = user_id
       @kind = kind
       @client_id = client_id
+      @session_id = session_id
       @token = token
     end
 
-    attr_reader :role, :user_id, :kind, :client_id, :token
+    attr_reader :role, :user_id, :kind, :client_id, :session_id, :token
 
     class << self
       attr_writer :environment
@@ -35,8 +36,9 @@ module Compeon
         user_id = data.fetch('uid')
         kind = data.fetch('knd')
         client_id = data.fetch('cid')
+        session_id = data.fetch('sid')
 
-        new(role: role, user_id: user_id, kind: kind, client_id: client_id, token: token)
+        new(role: role, user_id: user_id, kind: kind, client_id: client_id, session_id: session_id, token: token)
       rescue JWT::DecodeError
         raise ParseError
       end
