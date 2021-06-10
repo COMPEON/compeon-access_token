@@ -7,8 +7,12 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
   class TestToken < Compeon::Token::Base
     class << self
-      def attributes_mapping
+      def required_attributes_mapping
         { attribute: :attr }.freeze
+      end
+
+      def optional_attributes_mapping
+        { optional_attr: :oattr }.freeze
       end
 
       def jwt_algorithm
@@ -20,15 +24,30 @@ class Compeon::Token::DecoderTest < Minitest::Test
       end
     end
 
-    attr_accessor :attribute
+    attr_accessor :attribute, :optional_attr
 
-    def initialize(attribute:, **claims)
+    def initialize(attribute:, optional_attr: nil, **claims)
       super(claims)
       @attribute = attribute
+      @optional_attr = optional_attr
     end
   end
 
   def test_with_a_valid_token
+    encoded_token = JWT.encode({ attr: 'Ein Attribut', oattr: 'optional attribute', knd: 'test' }, PRIVATE_KEY, 'RS256')
+
+    decoded_token = Compeon::Token::Decoder.new(
+      encoded_token: encoded_token,
+      key: PRIVATE_KEY.public_key,
+      token_klass: TestToken
+    ).decode
+
+    assert_equal(TestToken, decoded_token.class)
+    assert_equal('Ein Attribut', decoded_token.attribute)
+    assert_equal('optional attribute', decoded_token.optional_attr)
+  end
+
+  def test_with_a_valid_token_with_optional_attributes_omitted
     encoded_token = JWT.encode({ attr: 'Ein Attribut', knd: 'test' }, PRIVATE_KEY, 'RS256')
 
     decoded_token = Compeon::Token::Decoder.new(
@@ -39,6 +58,7 @@ class Compeon::Token::DecoderTest < Minitest::Test
 
     assert_equal(TestToken, decoded_token.class)
     assert_equal('Ein Attribut', decoded_token.attribute)
+    assert_equal(nil, decoded_token.optional_attr)
   end
 
   def test_with_additional_claims

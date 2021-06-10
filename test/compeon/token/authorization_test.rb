@@ -12,7 +12,7 @@ class Compeon::Token::AuthorizationTest < Minitest::Test
   end
 
   def test_attributes
-    assert_equal(%i[client_id redirect_uri user_id], Compeon::Token::Authorization.attributes)
+    assert_equal(%i[client_id redirect_uri user_id session_id], Compeon::Token::Authorization.attributes)
   end
 
   def test_attributes_mapping
@@ -20,7 +20,8 @@ class Compeon::Token::AuthorizationTest < Minitest::Test
       {
         client_id: :cid,
         redirect_uri: :uri,
-        user_id: :uid
+        user_id: :uid,
+        session_id: :sid
       },
       Compeon::Token::Authorization.attributes_mapping
     )
@@ -30,22 +31,36 @@ class Compeon::Token::AuthorizationTest < Minitest::Test
     Compeon::Token::Authorization.new(
       client_id: 'client id',
       redirect_uri: 'redirect uri',
-      user_id: 'user id'
+      user_id: 'user id',
+      session_id: 'session id'
     )
   end
 
-  def test_attr_accessors
+  def test_session_id_is_optional
     token = Compeon::Token::Authorization.new(
       client_id: 'client id',
       redirect_uri: 'redirect uri',
       user_id: 'user id'
     )
 
+    assert_equal(nil, token.session_id)
+  end
+
+  def test_attr_accessors
+    token = Compeon::Token::Authorization.new(
+      client_id: 'client id',
+      redirect_uri: 'redirect uri',
+      user_id: 'user id',
+      session_id: 'session id'
+    )
+
     assert_equal('client id', token.client_id)
     assert_equal('redirect uri', token.redirect_uri)
     assert_equal('user id', token.user_id)
+    assert_equal('session id', token.session_id)
     assert(true, token.respond_to?(:client_id=))
     assert(true, token.respond_to?(:redirect_uri=))
     assert(true, token.respond_to?(:user_id=))
+    assert(true, token.respond_to?(:session_id=))
   end
 end
